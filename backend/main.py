@@ -5,8 +5,11 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+import traceback
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from routers.auth import router as auth_router
 from routers.inventory import router as inventory_router
@@ -61,6 +64,12 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(inventory_router)
 
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    tb = traceback.format_exc()
+    logging.error(f"Unhandled error: {exc}\n{tb}")
+    return JSONResponse(status_code=500, content={"detail": str(exc), "traceback": tb})
 
 @app.get("/health")
 def health_check():
