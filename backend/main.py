@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+import config
 from routers.auth import router as auth_router
 from routers.inventory import router as inventory_router
 from scheduler import on_shutdown, on_startup
