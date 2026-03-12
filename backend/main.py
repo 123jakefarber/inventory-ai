@@ -26,6 +26,8 @@ logging.basicConfig(
 # ---------------------------------------------------------------------------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from database import init_db
+    init_db()
     on_startup()
     yield
     on_shutdown()
