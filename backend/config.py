@@ -36,8 +36,8 @@ SQUARE_BASE_URL: str = (
 )
 SQUARE_OAUTH_REDIRECT_URL: str = os.getenv(
     "SQUARE_OAUTH_REDIRECT_URL", "http://localhost:8000/api/auth/square/callback"
-)
-FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
+).strip()
+FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000").strip()
 
 # ---------------------------------------------------------------------------
 # SMTP / Email alerts
