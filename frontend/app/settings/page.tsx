@@ -18,7 +18,8 @@ export default function SettingsPage() {
       setStatus("Square connected successfully!");
       refreshUser();
     } else if (square === "error") {
-      setStatus("Failed to connect Square. Please try again.");
+      const detail = searchParams.get("detail");
+      setStatus("Failed to connect Square: " + (detail ? decodeURIComponent(detail) : "Please try again."));
     }
   }, [searchParams, refreshUser]);
 

@@ -213,8 +213,10 @@ async def square_callback(
         )
 
     if response.status_code != 200:
-        logger.error("Square OAuth token exchange failed: %s", response.text)
-        return RedirectResponse(f"{config.FRONTEND_URL}/settings?square=error")
+        logger.error("Square OAuth token exchange failed: status=%s body=%s", response.status_code, response.text)
+        from urllib.parse import quote
+        error_msg = quote(response.text[:200])
+        return RedirectResponse(f"{config.FRONTEND_URL}/settings?square=error&detail={error_msg}")
 
     data = response.json()
     access_token = data.get("access_token", "")
