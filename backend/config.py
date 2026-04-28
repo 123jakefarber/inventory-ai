@@ -13,7 +13,7 @@ load_dotenv()
 # Base paths
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'inventory.db'}")
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'inventory.db'}").strip()
 
 # ---------------------------------------------------------------------------
 # JWT / Auth
@@ -26,9 +26,9 @@ JWT_REFRESH_EXPIRE_DAYS: int = int(os.getenv("JWT_REFRESH_EXPIRE_DAYS", "7"))
 # ---------------------------------------------------------------------------
 # Square OAuth (developer app credentials — NOT per-user)
 # ---------------------------------------------------------------------------
-SQUARE_APP_ID: str = os.getenv("SQUARE_APP_ID", "")
-SQUARE_APP_SECRET: str = os.getenv("SQUARE_APP_SECRET", "")
-SQUARE_ENVIRONMENT: str = os.getenv("SQUARE_ENVIRONMENT", "sandbox")  # sandbox | production
+SQUARE_APP_ID: str = os.getenv("SQUARE_APP_ID", "").strip()
+SQUARE_APP_SECRET: str = os.getenv("SQUARE_APP_SECRET", "").strip()
+SQUARE_ENVIRONMENT: str = os.getenv("SQUARE_ENVIRONMENT", "sandbox").strip()  # sandbox | production
 SQUARE_BASE_URL: str = (
     "https://connect.squareupsandbox.com"
     if SQUARE_ENVIRONMENT == "sandbox"
