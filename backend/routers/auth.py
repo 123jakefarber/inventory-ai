@@ -183,21 +183,33 @@ def square_authorize(user: User = Depends(get_current_user)):
 
 @router.get("/square/callback")
 async def square_callback(
-    code: str = Query(...),
     state: str = Query(""),
+    code: Optional[str] = Query(None),
+    error: Optional[str] = Query(None),
+    error_description: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
     """Handle the Square OAuth callback — exchange code for tokens."""
+    from urllib.parse import quote as urlquote
+
+    # Handle Square sending back an error (e.g. user denied, invalid app)
+    if error:
+        detail = urlquote((error_description or error)[:300])
+        return RedirectResponse(f"{config.FRONTEND_URL}/settings?square=error&detail={detail}")
+
+    if not code:
+        return RedirectResponse(f"{config.FRONTEND_URL}/settings?square=error&detail=No+authorization+code+received")
+
     # Extract user_id from state
     try:
         user_id_str = state.split(":")[0]
         user_id = int(user_id_str)
     except (ValueError, IndexError):
-        raise HTTPException(status_code=400, detail="Invalid state parameter")
+        return RedirectResponse(f"{config.FRONTEND_URL}/settings?square=error&detail=Invalid+state+parameter")
 
     user = db.query(User).get(user_id)
     if not user:
-        raise HTTPException(status_code=400, detail="Invalid user")
+        return RedirectResponse(f"{config.FRONTEND_URL}/settings?square=error&detail=User+not+found+-+please+sign+in+again")
 
     # Exchange authorization code for tokens
     async with httpx.AsyncClient(timeout=15.0) as client:
