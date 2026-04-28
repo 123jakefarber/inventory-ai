@@ -25,8 +25,13 @@ export default function SettingsPage() {
 
   const handleConnectSquare = async () => {
     setLoading("connect");
+    setStatus("Waking up server... please wait ~10 seconds");
     try {
+      // Ping health endpoint first to wake up Render free tier
+      await fetch("/api/health").catch(() => {});
+      await new Promise(r => setTimeout(r, 3000));
       const data = await getSquareAuthUrl();
+      setStatus("");
       window.location.href = data.url;
     } catch (err: any) {
       setStatus(err.message || "Failed to start Square connection");
